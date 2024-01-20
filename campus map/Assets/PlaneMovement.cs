@@ -6,11 +6,10 @@ using UnityEngine;
 public class PlaneMovement : MonoBehaviour
 {
     Rigidbody rigid;
-
+    public GameObject Camera;
     private void Awake()
     {
         rigid = GetComponent<Rigidbody>();
-        
     }
 
     private void Update()
@@ -37,8 +36,7 @@ public class PlaneMovement : MonoBehaviour
 
         float MouseY = Input.GetAxis("Mouse Y");
 
-        Debug.Log(transform.rotation.eulerAngles.x - MouseY);
-        float NextX = transform.rotation.eulerAngles.x - MouseY;
+        float NextX = Camera.transform.rotation.eulerAngles.x - MouseY;
         // 0~90, 270~360
         if (90 <= NextX && NextX <= 270)
         {
@@ -52,23 +50,7 @@ public class PlaneMovement : MonoBehaviour
             }
         }
 
-        transform.rotation = Quaternion.Euler(NextX, transform.rotation.eulerAngles.y + MouseX, 0);
+        transform.rotation = Quaternion.Euler(0, transform.rotation.eulerAngles.y + MouseX, 0);
+        Camera.transform.rotation = Quaternion.Euler(NextX, transform.rotation.eulerAngles.y, 0);
     }
-
-    //public Vector getDirection()
-    //{
-    //    Vector vector = new Vector();
-
-    //    double rotX = this.getYaw();
-    //    double rotY = this.getPitch();
-
-    //    vector.setY(-Math.sin(Math.toRadians(rotY)));
-
-    //    double xz = Math.cos(Math.toRadians(rotY));
-
-    //    vector.setX(-xz * Math.sin(Math.toRadians(rotX)));
-    //    vector.setZ(xz * Math.cos(Math.toRadians(rotX)));
-
-    //    return vector;
-    //}
 }
