@@ -2,18 +2,25 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Unity.Netcode;
 
-public class PlaneMovement : MonoBehaviour
+public class PlaneMovement : NetworkBehaviour
 {
     Rigidbody rigid;
     public GameObject Camera;
-    private void Awake()
+
+    public override void OnNetworkSpawn()
     {
+        base.OnNetworkSpawn();
+        if (IsOwner == false) return;
+        Camera.SetActive(true);
         rigid = GetComponent<Rigidbody>();
     }
 
     private void Update()
     {
+        if (IsOwner == false) return;
+
         float HorizontalInput = Input.GetAxisRaw("Horizontal");
         float VerticalInput = Input.GetAxisRaw("Vertical");
 
@@ -25,14 +32,10 @@ public class PlaneMovement : MonoBehaviour
         float speed = 5f;
 
         float FrontDir = (-Direction + MovingDirection) * Mathf.Deg2Rad;
-        Vector3 FrontVec = new Vector3(Mathf.Cos(FrontDir) * speed * keyPressed, 0, Mathf.Sin(FrontDir) * speed * keyPressed);
+        Vector3 FrontVec = new Vector3(Mathf.Cos(FrontDir) * speed * keyPressed, rigid.velocity.y , Mathf.Sin(FrontDir) * speed * keyPressed);
         rigid.velocity = FrontVec;
 
         float MouseX = Input.GetAxis("Mouse X");
-        //if(MouseX >= 45)
-        //{
-        //    MouseX = 45;
-        //}
 
         float MouseY = Input.GetAxis("Mouse Y");
 
